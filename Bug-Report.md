@@ -1,55 +1,47 @@
 # Bug Report – BookStack Demo
 
-> **Important:** Only submit a bug you have actually reproduced yourself and captured evidence for. Pick the candidate below that fails for you (see Test-Cases.md: TC-N02, TC-B05, TC-E02, TC-E06), and replace the italic placeholders.
-
----
-
 ## BUG-001
 
 | Field | Details |
 |---|---|
 | **Bug ID** | BUG-001 |
-| **Bug Title** | _e.g. Book can be created with a whitespace-only name_ |
-| **Module** | Books → Create Book |
-| **Environment** | BookStack Demo, Chrome _version_, _OS_, admin account |
-| **Severity** | _Low / Medium / High / Critical_ |
-| **Priority** | _Low / Medium / High_ |
+| **Bug Title** | Multiple books are created when the "Save Book" button is clicked more than once |
+| **Module** | Books → Create New Book |
+| **Related test case** | TC-E06 (Double-click Save) |
+| **Environment** | BookStack Demo (https://demo.bookstackapp.com); Google Chrome 156.0.8078.79 (64-bit); Windows; logged in as admin@example.com |
+| **Severity** | Medium |
+| **Priority** | Medium |
 | **Status** | Open |
-| **Reported on** | _date_ |
+| **Reported on** | 01.11.2026 |
+| **Reported by** | Ashfiqun Ahmed Miftah |
+
+### Description
+When the **Save Book** button is clicked more than once in quick succession on the Create Book form (for example a double-click, or clicking again because the page responds slowly), the application creates several books with the same name instead of one. The button is not disabled and duplicate submissions are not prevented.
 
 ### Steps to Reproduce
-1. Go to the BookStack Demo and log in with `admin@example.com` / `password`.
-2. Click **Books → Create New Book**.
-3. _Enter the problematic input, e.g. 5 spaces in the Name field._
-4. Click **Save Book**.
+1. Open https://demo.bookstackapp.com and log in with `admin@example.com` / `password`.
+2. Go to **Books → Create New Book**.
+3. Enter `abc` in the **Name** field.
+4. Double-click (or click several times quickly) on the **Save Book** button.
+5. Go to **Books** and check the list.
 
 ### Expected Result
-_Validation error is shown and no book is created._
+Only one book named `abc` is created. The Save button should be disabled after the first click, or duplicate submissions should be ignored.
 
 ### Actual Result
-_Describe exactly what happened, e.g. a book with an empty/blank title was created and appears as a blank entry in the Books list._
+More than one book named `abc` was created. Each one has its own URL.
+
+### Impact
+- Duplicate content that users have to delete by hand.
+- Extra clutter in the Books list and in search results.
+- Likely to happen to real users on slow connections or with accidental double-clicks.
+
+### Workaround
+Delete the extra books manually.
 
 ### Evidence
-- Screenshot: `evidence/bug-001-step3.png` (input)
-- Screenshot: `evidence/bug-001-result.png` (result)
+- Recording/screenshot: https://drive.google.com/file/d/1nKjiyxziyxZ4V_emMoOPjeYSRQnZ8wls/view?usp=sharing
+- Also attached to the Jira ticket.
 
-![result](evidence/bug-001-result.png)
-
----
-
-## Candidate bug areas to probe (pick whichever really fails)
-
-| Candidate | How to test | Typical severity |
-|---|---|---|
-| Whitespace-only name accepted | TC-N02 | Low–Medium |
-| 256-character name accepted or causes server error (500) | TC-B05 | Medium |
-| Name with HTML/script not escaped in some view (list, breadcrumb, search) | TC-E02 | High |
-| Double-click on Save creates duplicate books | TC-E06 | Low–Medium |
-| Very long name without spaces overflows layout on book card / sidebar | TC-B04 | Low |
-| Emoji/Unicode name produces broken slug or 404 on book URL | TC-E03 | Medium |
-
-## Severity Guide
-- **Critical:** crash, data loss, security hole (e.g. working XSS)
-- **High:** major feature broken, no workaround
-- **Medium:** feature misbehaves, workaround exists
-- **Low:** cosmetic or minor validation gap
+### Severity Rationale
+Medium: the feature works but produces incorrect data. It is not a crash or data loss, and the extra books can be removed.
